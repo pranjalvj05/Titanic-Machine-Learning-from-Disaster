@@ -1,0 +1,98 @@
+---
+title: "Titanic_Solution"
+author: "Pranjal Vijay"
+date: "March 2, 2018"
+output: html_document
+---
+```{r}
+#Load the libraries
+library(ggplot2)
+library(dplyr)
+library(statsr)
+```
+```{r}
+#Load the Data
+Traindataset<-read.csv("C:/Users/ddddd/Comptitions/Kaggle/Titanic_survived/train.csv", stringsAsFactors = F)
+Testdataset<-read.csv("C:/Users/ddddd/Comptitions/Kaggle/Titanic_survived/test.csv", stringsAsFactors = F)
+```
+###Research Question: 
+According to the provided data of Titanic Disaster we are asked to find out the information of people who survived . 
+
+Observing the given data sets , I found these variables more impactable:
+Survived , Sex and Age.
+
+I am going to calculate here that who survived more :
+
+(i)  Males or Females 
+
+(ii) People below or above average age 
+
+##Data Exploration
+```{r}
+
+names(Traindataset)
+```
+```{r}
+str(Traindataset)
+```
+
+##Data Preprocessing
+
+####How many males and female on Titanic ?
+```{r}
+Traindataset %>% 
+  filter(Sex != "NA") %>%
+  group_by(Sex) %>% 
+  summarise(count = n())
+```
+
+####People having age 
+```{r}
+Traindataset$Age <- as.integer(Traindataset$Age)
+```
+
+```{r}
+Traindataset %>% 
+  filter(Age != "NA") %>%
+ mutate(Age = ifelse(Age > 0, "Positive_Sur", "Negative_Sur"))
+Traindataset %>%  
+  group_by(Age) %>% 
+  summarise(count = n())
+```
+```{r}
+Traindataset %>% 
+  filter(!(is.na(Age))) %>%
+  summarise(Agemean = mean(Age), Agemedian = median(Age), Agesd = sd(Age), 
+            Agemin = min(Age), Agemax = max(Age))
+```
+```{r}
+Traindataset <- Traindataset %>% 
+    filter(!(is.na(Age))) %>%
+   mutate(Age = ifelse(Age >= 28, "HighAge", "LowAge"))
+Traindataset %>% 
+  group_by(Age) %>% 
+  summarise(count = n())
+```
+
+
+
+
+```{r}
+Traindataset <- Traindataset %>% 
+    filter(!(is.na(Survived))) %>%
+  mutate(Survived = ifelse(Survived > 0, "Positive_Sur", "Negative_Sur"))
+Traindataset %>% 
+  group_by(Survived) %>% 
+  summarise(count = n())
+```
+
+
+```{r}
+Traindataset$Fare <- as.factor(Traindataset$Fare)
+Traindataset %>% 
+  filter(Fare != "NA") %>%
+  group_by(Fare) %>% 
+  summarise(count = n())
+```
+
+
